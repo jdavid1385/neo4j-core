@@ -129,19 +129,19 @@ module Neo4j
             # @path Path part of URL
             # @body Body for the request.  If a Query or Array of Queries,
             #       it is automatically converted
-            def request(method, path, body = '', _options = {})
+            def request(method='', path='', body = '', _options = {}, &block)
               request_body = request_body(body)
               url = url_from_path(path)
               @instrument_proc.call(method, url, request_body) do
                 wrap_connection_failed! do
-                  @faraday.run_request(method, url, request_body, REQUEST_HEADERS)
+                  @faraday.run_request(method, url, request_body, REQUEST_HEADERS, &block)
                 end
               end
             end
 
             # Convenience method to #request(:post, ...)
-            def post(path, body = '', options = {})
-              request(:post, path, body, options)
+            def post(path='', body = '', options = {}, &block)
+              request(:post, path, body, options, &block)
             end
 
             # Convenience method to #request(:get, ...)
